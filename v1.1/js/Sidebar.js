@@ -69,6 +69,15 @@ function Sidebar(loopy){
 			if(name=="" || name=="?") page.getComponent("label").select();
 
 		};
+		// Add this in the Sidebar initialization
+		page.addComponent(new ComponentButton({
+			label: "Show Node Data",
+			onclick: function() {
+				document.getElementById('data-window').style.display = 'block';
+				updateNodeData();
+			}
+		}));
+
 		page.addComponent(new ComponentButton({
 			label: "delete node",
 			//label: "delete circle",
@@ -104,9 +113,7 @@ function Sidebar(loopy){
 			"(to make a delayed relationship, draw longer arrows)"
 		}));
 		page.addComponent(new ComponentButton({
-			//label: "delete edge",
 			label: "delete arrow",
-			//label: "delete relationship",
 			onclick: function(edge){
 				edge.kill();
 				self.showPage("Edit");
@@ -169,6 +176,7 @@ function Sidebar(loopy){
 
 			"<span class='mini_button' onclick='publish(\"modal\",[\"examples\"])'>see examples</span> "+
 			"<span class='mini_button' onclick='publish(\"modal\",[\"howto\"])'>how to</span> "+
+			"<span class='mini_button' onclick='publish(\"modal\",[\"data\"])'>see data</span><br><br>"+
 			"<span class='mini_button' onclick='publish(\"modal\",[\"credits\"])'>credits</span><br><br>"+
 
 			"<hr/><br>"+
@@ -196,6 +204,26 @@ function Sidebar(loopy){
 			publish("modal",["save_link"]);
 		}
 	});
+
+	function updateNodeData() {
+		var content = document.getElementById('node-data-content');
+		content.innerHTML = ''; // Clear previous data
+	
+		// Access nodes from loopy.model.nodes
+		loopy.model.nodes.forEach(function(node) {
+			var nodeData = `
+				<div>
+					<h3>Node: ${node.label}</h3>
+					<p>Hue: ${node.hue}</p>
+					<p>Initial Amount: ${node.init * 6} (on a 1-6 scale)</p>
+					<p>Current Amount: ${node.value * 6} (on a 1-6 scale)</p>
+					<hr>
+				</div>
+			`;
+			content.innerHTML += nodeData;
+		});
+	}
+	
 
 }
 

@@ -40,6 +40,10 @@ function Loopy(config){
 	self.sidebar = new Sidebar(self);
 	self.sidebar.showPage("Edit"); // start here
 
+	// Output Window
+	self.outputWindow = new OutputWindow(self);
+	// self.outputWindow.showPage("Edit");
+
 	// Play/Edit mode
 	self.mode = Loopy.MODE_EDIT;
 
