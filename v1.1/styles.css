@@ -34,6 +34,7 @@ button {
     right: 20px;
     font-size: 24px;
     cursor: pointer;
+    margin: 0px;
 }
 
 .tabs {
@@ -50,6 +51,7 @@ button {
     cursor: pointer;
     text-align: center;
     font-size: 16px;
+    margin: 0px;
 }
 
 .tablink:hover {

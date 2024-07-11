@@ -80,7 +80,6 @@ function Sidebar(loopy){
 
 		page.addComponent(new ComponentButton({
 			label: "delete node",
-			//label: "delete circle",
 			onclick: function(node){
 				node.kill();
 				self.showPage("Edit");
@@ -176,7 +175,6 @@ function Sidebar(loopy){
 
 			"<span class='mini_button' onclick='publish(\"modal\",[\"examples\"])'>see examples</span> "+
 			"<span class='mini_button' onclick='publish(\"modal\",[\"howto\"])'>how to</span> "+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"data\"])'>see data</span><br><br>"+
 			"<span class='mini_button' onclick='publish(\"modal\",[\"credits\"])'>credits</span><br><br>"+
 
 			"<hr/><br>"+

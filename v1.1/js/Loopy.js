@@ -107,7 +107,7 @@ function Loopy(config){
 		publish("loopy/mode");
 
 		// Play mode!
-		if(mode==Loopy.MODE_PLAY){
+		if (mode==Loopy.MODE_PLAY) {
 			self.showPlayTutorial = true; // show once!
 			if(!self.embedded) self.wobbleControls=45; // only if NOT embedded
 			self.sidebar.showPage("Edit");
@@ -115,12 +115,13 @@ function Loopy(config){
 			self.sidebar.dom.setAttribute("mode","play");
 			self.toolbar.dom.setAttribute("mode","play");
 			document.getElementById("canvasses").removeAttribute("cursor"); // TODO: EVENT BASED
-		}else{
-			publish("model/reset");
-		}
+		} 
+		// else{
+		// 	publish("model/reset");
+		// }
 
 		// Edit mode!
-		if(mode==Loopy.MODE_EDIT){
+		else if (mode==Loopy.MODE_EDIT) {
 			self.showPlayTutorial = false; // donezo
 			self.wobbleControls = -1; // donezo
 			self.sidebar.showPage("Edit");
@@ -131,6 +132,20 @@ function Loopy(config){
 		}
 
 	};
+
+
+	///////////////////////////
+	// Key commands //
+	///////////////////////////
+
+	// document.addEventListener('click', e => {
+	// 	console.log(e.shiftKey); // shift
+	// 	console.log(e.ctrlKey); // ctrl
+	// 	console.log(e.altKey); // alt
+	// 	console.log(e.metaKey); // command/windows (meta) key
+	//   });
+
+
 
 	/////////////////
 	// SAVE & LOAD //

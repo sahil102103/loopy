@@ -1,87 +1,72 @@
-// document.getElementById('openPopupBtn').addEventListener('click', function() {
-//     document.getElementById('popupContainer').style.display = 'block';
-// });
+document.getElementById('openPopupBtn').addEventListener('click', openPopup);
+document.getElementById('closePopupBtn').addEventListener('click', closePopup);
 
-// document.getElementById('closePopupBtn').addEventListener('click', function() {
-//     document.getElementById('popupContainer').style.display = 'none';
-// });
-
-// function openPage(pageName) {
-//     var i, tabcontent, tablinks;
-
-//     tabcontent = document.getElementsByClassName('tabcontent');
-//     for (i = 0; i < tabcontent.length; i++) {
-//         tabcontent[i].style.display = 'none';
-//     }
-
-//     tablinks = document.getElementsByClassName('tablink');
-//     for (i = 0; i < tablinks.length; i++) {
-//         tablinks[i].style.backgroundColor = '';
-//     }
-
-//     document.getElementById(pageName).style.display = 'block';
-//     document.querySelector(`[onclick="openPage('${pageName}')"]`).style.backgroundColor = '#ccc';
-// }
-
-{/* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> */}
-
-// // add CDN to head of DOM
-// var chartScript = document.createElement('chart');  
-// chartScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js');
-// document.head.appendChild(chartScript);
-
-document.getElementById('openPopupBtn').addEventListener('click', function() {
+function openPopup() {
     document.getElementById('popupContainer').style.display = 'block';
-});
+}
 
-document.getElementById('closePopupBtn').addEventListener('click', function() {
+function closePopup() {
     document.getElementById('popupContainer').style.display = 'none';
-});
+}
 
-function openPage(pageName) {
-    var i, tabcontent, tablinks;
+// Initialize nodeData with a check to ensure model and model.nodes are defined
 
-    tabcontent = document.getElementsByClassName('tabcontent');
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = 'none';
-    }
 
-    tablinks = document.getElementsByClassName('tablink');
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].style.backgroundColor = '';
-    }
 
-    document.getElementById(pageName).style.display = 'block';
-    document.querySelector(`[onclick="openPage('${pageName}')"]`).style.backgroundColor = '#ccc';
-    
-    if(pageName === 'TimeSeries') {
-        drawTimeSeriesChart();
+// loopy.model.nodes.forEach(function(node) {
+//     var nodeData = `
+//         <div>
+//             <h3>Node: ${node.label}</h3>
+//             <p>Hue: ${convertNumToColor(node.hue)}</p>
+//             <p>Initial Amount: ${node.init * 6} (on a 1-6 scale)</p>
+//             <p>Current Amount: ${node.value * 6} (on a 1-6 scale)</p>
+//             <hr>
+//         </div>
+//     `;
+//     content.innerHTML += nodeData;
+// })
+
+
+
+var chart;
+
+function convertNumToColor(color) {
+    switch (color) {
+        case 0:
+            return "Red" 
+        case 1:
+            return "Orange" 
+        case 2:
+            return "Yellow" 
+        case 3:
+            return "Green" 
+        case 4:
+            return "Blue" 
+        case 5:
+            return "Purple" 
+        default:
+            return;
     }
 }
 
-
-// TODO: Make a function to iterate through all the nodes to create the time series
-// TODO: I can store the time series information in a hashmap, with key as time elapsed and value as y as (currentVal/initalVal)
 function drawTimeSeriesChart() {
-    const ctx = document.getElementById('timeSeriesChart');
-    new Chart(ctx, {
+    let timeSeriesNodeData = []
+    loopy.model.nodes.forEach(node => {
+        timeSeriesNodeData.push({
+        label: node.label,
+        data: [],
+        borderColor: `${convertNumToColor(node.hue)}`,
+        borderWidth: 1,
+        fill: false
+        })
+    });
+
+    const ctx = document.getElementById('timeSeriesChart').getContext('2d');
+    chart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'], // Replace with your actual time data
-            datasets: [{
-                label: 'Initial Amount',
-                data: [3, 2, 2, 5, 4, 6, 7], // Replace with your actual data
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-                fill: false
-            },
-            {
-                label: 'Current Amount',
-                data: [1, 3, 4, 2, 5, 3, 6], // Replace with your actual data
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1,
-                fill: false
-            }]
+            labels: ['0'],
+            datasets: timeSeriesNodeData
         },
         options: {
             scales: {
@@ -94,7 +79,7 @@ function drawTimeSeriesChart() {
                 y: {
                     title: {
                         display: true,
-                        text: 'Current Node Value / Inital Node Value'
+                        text: 'Current Node Value'
                     },
                     beginAtZero: true
                 }
@@ -103,3 +88,29 @@ function drawTimeSeriesChart() {
     });
 }
 
+function openPage(pageName) {
+    let tabcontent = document.getElementsByClassName('tabcontent');
+    for (let i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = 'none';
+    }
+
+    let tablinks = document.getElementsByClassName('tablink');
+    for (let i = 0; i < tablinks.length; i++) {
+        tablinks[i].style.backgroundColor = '';
+    }
+
+    document.getElementById(pageName).style.display = 'block';
+    document.querySelector(`[onclick="openPage('${pageName}')"]`).style.backgroundColor = '#ccc';
+
+    if (pageName === 'TimeSeries') {
+        drawTimeSeriesChart();
+    }
+}
+
+function updateTimeSeriesChart(tick, currentAmount, iter) {
+    // chart.data.labels.push(tick)
+    // chart.data.datasets.forEach(dataset => {
+    chart.data.datasets[iter].data.push(currentAmount);
+    // });
+    chart.update();
+}

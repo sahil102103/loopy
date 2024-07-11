@@ -18,7 +18,10 @@ Node.defaultHue = 0;
 
 Node.DEFAULT_RADIUS = 60;
 
+var selectedNodes = [];
+
 function Node(model, config){
+	
 
 	var self = this;
 	self._CLASS_ = "Node";
@@ -38,7 +41,6 @@ function Node(model, config){
 		hue: Node.defaultHue,
 		radius: Node.DEFAULT_RADIUS
 	});
-
 	// Value: from 0 to 1
 	self.value = self.init;
 	// TODO: ACTUALLY VISUALIZE AN INFINITE RANGE
@@ -71,7 +73,21 @@ function Node(model, config){
 		}
 
 	});
-	var _listenerMouseDown = subscribe("mousedown",function(){
+
+	// onmousedown = (event) => {
+	// 	if (event.shiftKey && _controlsSelected) {
+	// 		console.log("fjks")
+	// 		if (selectedNodes.includes(self)) {
+	// 			selectedNodes = selectedNodes.filter(node => node !== self);
+	// 		} else {
+	// 			selectedNodes.push(self);
+	// 		}
+	// 	}
+	// }
+
+
+
+	var _listenerMouseDown = subscribe("mousedown", function() {
 
 		if(self.loopy.mode!=Loopy.MODE_PLAY) return; // ONLY WHEN PLAYING
 		if(_controlsSelected) _controlsPressed = true;
@@ -80,7 +96,7 @@ function Node(model, config){
 		if(_controlsPressed){
 
 			// Change my value
-			var delta = _controlsDirection*0.33; // HACK: hard-coded 0.33
+			var delta = _controlsDirection * 0.33; // HACK: hard-coded 0.33
 			self.value += delta;
 
 			// And also PROPAGATE THE DELTA
@@ -88,11 +104,13 @@ function Node(model, config){
 				delta: delta
 			});
 
-		}
+            }
 
 	});
+
+
 	var _listenerMouseUp = subscribe("mouseup",function(){
-		if(self.loopy.mode!=Loopy.MODE_PLAY) return; // ONLY WHEN PLAYING
+		if (self.loopy.mode!=Loopy.MODE_PLAY) return; // ONLY WHEN PLAYING
 		_controlsPressed = false;
 	});
 	var _listenerReset = subscribe("model/reset", function(){
@@ -128,6 +146,75 @@ function Node(model, config){
 
 	};
 
+	function updateNodeData() {
+		var content = document.getElementById('node-data-content');
+		content.innerHTML = ''; // Clear previous data
+	
+		// Access nodes from loopy.model.nodes
+		model.nodes.forEach(function(node) {
+			var nodeData = `
+				<div>
+					<h3>Node: ${node.label}</h3>
+					<p>Hue: ${convertNumToColor(node.hue)}</p>
+					<p>Initial Amount: ${node.init * 6} (on a 1-6 scale)</p>
+					<p>Current Amount: ${node.value * 6} (on a 1-6 scale)</p>
+					<hr>
+				</div>
+			`;
+			content.innerHTML += nodeData;
+		});
+	}
+
+	function convertNumToColor(color) {
+		switch (color) {
+			case 0:
+				return "Red" 
+			case 1:
+				return "Orange" 
+			case 2:
+				return "Yellow" 
+			case 3:
+				return "Green" 
+			case 4:
+				return "Blue" 
+			case 5:
+				return "Purple" 
+			default:
+				return;
+		}
+	}
+
+	var tick = 1
+
+	self.takeSignal = function(signal) {
+		// Change value
+		self.value += signal.delta;
+	
+		// Propagate signal
+		self.sendSignal(signal);
+		// self.sendSignal(signal.delta);
+	
+		// Update the chart with the new node value
+
+		// Update the time series chart for each node
+		// model.nodes.forEach(function(node) {
+		
+		if (chart){
+			chart.data.labels.push(tick);
+			tick++
+
+			for (let i = 0; i < model.nodes.length; i++) {
+				// tick++;
+				updateTimeSeriesChart(tick, model.nodes[i].value, i);
+			}
+		}
+		
+
+
+		// })
+		
+	}
+	
 
 	//////////////////////////////////////
 	// UPDATE & DRAW /////////////////////
@@ -146,9 +233,10 @@ function Node(model, config){
 		var _isPlaying = (self.loopy.mode==Loopy.MODE_PLAY);
 
 		// Otherwise, value = initValue exactly
-		if(self.loopy.mode==Loopy.MODE_EDIT){
+		if (self.loopy.mode==Loopy.MODE_EDIT){
 			self.value = self.init;
 		}
+		updateNodeData();
 
 		// Cursor!
 		if(_controlsSelected) Mouse.showCursor("pointer");
@@ -189,7 +277,7 @@ function Node(model, config){
 		ctx.translate(x,y+_offset);
 		
 		// DRAW HIGHLIGHT???
-		if(self.loopy.sidebar.currentPage.target == self){
+		if (self.loopy.sidebar.currentPage.target == self || selectedNodes.includes(self)){
 			ctx.beginPath();
 			ctx.arc(0, 0, r+40, 0, Math.TAU, false);
 			ctx.fillStyle = HIGHLIGHT_COLOR;
@@ -300,6 +388,9 @@ function Node(model, config){
 
 		// Remove from parent!
 		model.removeNode(self);
+
+		// Remove from selected nodes
+		selectedNodes = selectedNodes.filter(node => node !== self);
 
 		// Killed!
 		publish("kill",[self]);
