@@ -86,6 +86,21 @@ function Modal(loopy){
 
 	})();
 
+	// Data
+	(function(){
+		var page = new Page();
+		page.width = 670;
+		page.height = 570;
+		var iframe = page.addComponent(new ModalIframe({
+			page: page,
+			src: "pages/data",
+			width: 640,
+			height: 520
+		}));
+		iframe.dom.style.background = "#f7f7f7";
+		self.addPage("data", page);
+	})();
+
 	// Credits
 	(function(){
 		var page = new Page();
