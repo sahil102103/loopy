@@ -116,12 +116,12 @@ function Loopy(config){
 			self.toolbar.dom.setAttribute("mode","play");
 			document.getElementById("canvasses").removeAttribute("cursor"); // TODO: EVENT BASED
 		} 
-		// else{
-		// 	publish("model/reset");
-		// }
+		else{
+			publish("model/reset");
+		}
 
 		// Edit mode!
-		else if (mode==Loopy.MODE_EDIT) {
+		if (mode==Loopy.MODE_EDIT) {
 			self.showPlayTutorial = false; // donezo
 			self.wobbleControls = -1; // donezo
 			self.sidebar.showPage("Edit");

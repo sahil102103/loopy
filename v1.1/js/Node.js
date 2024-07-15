@@ -56,7 +56,11 @@ function Node(model, config){
 	var _controlsDirection = 0;
 	var _controlsSelected = false;
 	var _controlsPressed = false;	
+	var _controlsPressedWhenNotInPlay = false
+
 	var _listenerMouseMove = subscribe("mousemove", function(){
+
+		_controlsPressedWhenNotInPlay = self.isPointInNode(Mouse.x, Mouse.y);
 
 		// ONLY WHEN PLAYING
 		if(self.loopy.mode!=Loopy.MODE_PLAY) return;
@@ -74,40 +78,40 @@ function Node(model, config){
 
 	});
 
-	// onmousedown = (event) => {
-	// 	if (event.shiftKey && _controlsSelected) {
-	// 		console.log("fjks")
-	// 		if (selectedNodes.includes(self)) {
-	// 			selectedNodes = selectedNodes.filter(node => node !== self);
-	// 		} else {
-	// 			selectedNodes.push(self);
-	// 		}
-	// 	}
-	// }
 
 
+	var _listenerMouseDownNotPlaying = subscribe("mousedown", function() {
+		if(_controlsPressedWhenNotInPlay) {
+			onmousedown = (event) => {
+				if (event.shiftKey) {
+					if (selectedNodes.includes(self)) {
+						selectedNodes = selectedNodes.filter(node => node !== self);
+					} else {
+						selectedNodes.push(self);
+					}
+				};
+			}
+		}
+    });
 
-	var _listenerMouseDown = subscribe("mousedown", function() {
 
-		if(self.loopy.mode!=Loopy.MODE_PLAY) return; // ONLY WHEN PLAYING
-		if(_controlsSelected) _controlsPressed = true;
+    var _listenerMouseDown = subscribe("mousedown", function() {
+
+        if(self.loopy.mode!=Loopy.MODE_PLAY) return; // ONLY WHEN PLAYING
+        if(_controlsSelected) _controlsPressed = true;
+
 
 		// IF YOU CLICKED ME...
-		if(_controlsPressed){
-
-			// Change my value
-			var delta = _controlsDirection * 0.33; // HACK: hard-coded 0.33
+        if(_controlsPressed) {
+			var delta = _controlsDirection * 0.33;
 			self.value += delta;
+			self.sendSignal({ delta: delta });
 
-			// And also PROPAGATE THE DELTA
-			self.sendSignal({
-				delta: delta
-			});
+        } 
 
-            }
 
-	});
 
+    });
 
 	var _listenerMouseUp = subscribe("mouseup",function(){
 		if (self.loopy.mode!=Loopy.MODE_PLAY) return; // ONLY WHEN PLAYING
@@ -192,27 +196,23 @@ function Node(model, config){
 	
 		// Propagate signal
 		self.sendSignal(signal);
-		// self.sendSignal(signal.delta);
-	
-		// Update the chart with the new node value
 
 		// Update the time series chart for each node
-		// model.nodes.forEach(function(node) {
-		
-		if (chart){
+		if (chart && (selectedNodes.length == 0)) {
 			chart.data.labels.push(tick);
 			tick++
-
 			for (let i = 0; i < model.nodes.length; i++) {
-				// tick++;
+				console.log(model.nodes[i])
 				updateTimeSeriesChart(tick, model.nodes[i].value, i);
 			}
+		} else if (chart && selectedNodes) {
+			chart.data.labels.push(tick);
+			tick++
+			for (let i = 0; i < selectedNodes.length; i++) {
+				console.log(selectedNodes[i].value)
+				updateTimeSeriesChart(tick, selectedNodes[i].value, i);
+			}
 		}
-		
-
-
-		// })
-		
 	}
 	
 
@@ -277,10 +277,18 @@ function Node(model, config){
 		ctx.translate(x,y+_offset);
 		
 		// DRAW HIGHLIGHT???
-		if (self.loopy.sidebar.currentPage.target == self || selectedNodes.includes(self)){
+		if (self.loopy.sidebar.currentPage.target == self){
 			ctx.beginPath();
 			ctx.arc(0, 0, r+40, 0, Math.TAU, false);
 			ctx.fillStyle = HIGHLIGHT_COLOR;
+			ctx.fill();
+		}
+
+		// DRAW HIGHLIGHT???
+		if (selectedNodes.includes(self)){
+			ctx.beginPath();
+			ctx.arc(0, 0, r+50, 0, Math.TAU, false);
+			ctx.fillStyle = MULTIPLE_HIGHLIGHT_COLOR;
 			ctx.fill();
 		}
 		
@@ -383,6 +391,7 @@ function Node(model, config){
 		// Kill Listeners!
 		unsubscribe("mousemove",_listenerMouseMove);
 		unsubscribe("mousedown",_listenerMouseDown);
+		unsubscribe("mousedown",_listenerMouseDownNotPlaying);
 		unsubscribe("mouseup",_listenerMouseUp);
 		unsubscribe("model/reset",_listenerReset);
 

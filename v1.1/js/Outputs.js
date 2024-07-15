@@ -51,15 +51,32 @@ function convertNumToColor(color) {
 
 function drawTimeSeriesChart() {
     let timeSeriesNodeData = []
-    loopy.model.nodes.forEach(node => {
-        timeSeriesNodeData.push({
-        label: node.label,
-        data: [],
-        borderColor: `${convertNumToColor(node.hue)}`,
-        borderWidth: 1,
-        fill: false
+    console.log('a')
+    if (selectedNodes.length == 0) {
+        console.log('b')
+        console.log(selectedNodes)
+        loopy.model.nodes.forEach(node => {
+            timeSeriesNodeData.push({
+            label: node.label,
+            data: [],
+            borderColor: `${convertNumToColor(node.hue)}`,
+            borderWidth: 1,
+            fill: false
+            })
         })
-    });
+    } else {
+        console.log('c')
+        selectedNodes.forEach(node => {
+            console.log(node)
+            timeSeriesNodeData.push({
+            label: node.label,
+            data: [],
+            borderColor: `${convertNumToColor(node.hue)}`,
+            borderWidth: 1,
+            fill: false
+            })
+        })
+    }
 
     const ctx = document.getElementById('timeSeriesChart').getContext('2d');
     chart = new Chart(ctx, {
@@ -86,6 +103,11 @@ function drawTimeSeriesChart() {
             }
         }
     });
+
+    for (node in selectedNodes) {
+        console.log(node)
+    }
+
 }
 
 function openPage(pageName) {
@@ -108,9 +130,7 @@ function openPage(pageName) {
 }
 
 function updateTimeSeriesChart(tick, currentAmount, iter) {
-    // chart.data.labels.push(tick)
-    // chart.data.datasets.forEach(dataset => {
+    console.log(chart.data)
     chart.data.datasets[iter].data.push(currentAmount);
-    // });
     chart.update();
 }
