@@ -32,7 +32,7 @@ function Toolbar(loopy){
 		// Keyboard shortcut!
 		(function(id){
 			subscribe("key/"+id,function(){
-				loopy.ink.reset(); // also CLEAR INK CANVAS
+				loopy.ink.reset(); // also CLEAR INK CANVAS 
 				buttonsByID[id].callback();
 			});
 		})(id);
