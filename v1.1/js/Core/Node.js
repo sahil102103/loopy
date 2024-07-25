@@ -150,24 +150,24 @@ function Node(model, config){
 
 	};
 
-	function updateNodeData() {
-		var content = document.getElementById('node-data-content');
-		content.innerHTML = ''; // Clear previous data
+	// function updateNodeData() {
+	// 	var content = document.getElementById('node-data-content');
+	// 	content.innerHTML = ''; // Clear previous data
 	
-		// Access nodes from loopy.model.nodes
-		model.nodes.forEach(function(node) {
-			var nodeData = `
-				<div>
-					<h3>Node: ${node.label}</h3>
-					<p>Hue: ${convertNumToColor(node.hue)}</p>
-					<p>Initial Amount: ${node.init * 6} (on a 1-6 scale)</p>
-					<p>Current Amount: ${node.value * 6} (on a 1-6 scale)</p>
-					<hr>
-				</div>
-			`;
-			content.innerHTML += nodeData;
-		});
-	}
+	// 	// Access nodes from loopy.model.nodes
+	// 	model.nodes.forEach(function(node) {
+	// 		var nodeData = `
+	// 			<div>
+	// 				<h3>Node: ${node.label}</h3>
+	// 				<p>Hue: ${convertNumToColor(node.hue)}</p>
+	// 				<p>Initial Amount: ${node.init * 6} (on a 1-6 scale)</p>
+	// 				<p>Current Amount: ${node.value * 6} (on a 1-6 scale)</p>
+	// 				<hr>
+	// 			</div>
+	// 		`;
+	// 		content.innerHTML += nodeData;
+	// 	});
+	// }
 
 	function convertNumToColor(color) {
 		switch (color) {
@@ -203,14 +203,14 @@ function Node(model, config){
 			tick++
 			for (let i = 0; i < model.nodes.length; i++) {
 				console.log(model.nodes[i])
-				updateTimeSeriesChart(tick, model.nodes[i].value, i);
+				updateTimeSeriesChart(model.nodes[i].value, i);
 			}
 		} else if (chart && selectedNodes) {
 			chart.data.labels.push(tick);
 			tick++
 			for (let i = 0; i < selectedNodes.length; i++) {
 				console.log(selectedNodes[i].value)
-				updateTimeSeriesChart(tick, selectedNodes[i].value, i);
+				updateTimeSeriesChart(selectedNodes[i].value, i);
 			}
 		}
 	}
@@ -236,7 +236,7 @@ function Node(model, config){
 		if (self.loopy.mode==Loopy.MODE_EDIT){
 			self.value = self.init;
 		}
-		updateNodeData();
+		// updateNodeData();
 
 		// Cursor!
 		if(_controlsSelected) Mouse.showCursor("pointer");

@@ -11,7 +11,7 @@ window.HIGHLIGHT_COLOR = "rgba(193, 220, 255, 0.6)";
 
 window.MULTIPLE_HIGHLIGHT_COLOR = "rgba(193, 220, 255, 0.3)";
 
-var isMacLike = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
+var isMacLike = navigator.userAgentData.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
 
 var _PADDING = 25;
 var _PADDING_BOTTOM = 110;
@@ -275,10 +275,10 @@ function _makeErrorFunc(msg){
 	};
 }
 
-function _getParameterByName(name){
+function _getParameterByName(name) {
 	var url = window.location.href;
 	name = name.replace(/[\[\]]/g, "\\$&");
-	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
 	results = regex.exec(url);
 	if (!results) return null;
 	if (!results[2]) return '';

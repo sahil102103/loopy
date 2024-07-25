@@ -1,33 +1,3 @@
-document.getElementById('openPopupBtn').addEventListener('click', openPopup);
-document.getElementById('closePopupBtn').addEventListener('click', closePopup);
-
-function openPopup() {
-    document.getElementById('popupContainer').style.display = 'block';
-}
-
-function closePopup() {
-    document.getElementById('popupContainer').style.display = 'none';
-}
-
-// Initialize nodeData with a check to ensure model and model.nodes are defined
-
-
-
-// loopy.model.nodes.forEach(function(node) {
-//     var nodeData = `
-//         <div>
-//             <h3>Node: ${node.label}</h3>
-//             <p>Hue: ${convertNumToColor(node.hue)}</p>
-//             <p>Initial Amount: ${node.init * 6} (on a 1-6 scale)</p>
-//             <p>Current Amount: ${node.value * 6} (on a 1-6 scale)</p>
-//             <hr>
-//         </div>
-//     `;
-//     content.innerHTML += nodeData;
-// })
-
-
-
 var chart;
 
 function convertNumToColor(color) {
@@ -49,11 +19,11 @@ function convertNumToColor(color) {
     }
 }
 
+
+
 function drawTimeSeriesChart() {
     let timeSeriesNodeData = []
-    console.log('a')
     if (selectedNodes.length == 0) {
-        console.log('b')
         console.log(selectedNodes)
         loopy.model.nodes.forEach(node => {
             timeSeriesNodeData.push({
@@ -65,7 +35,6 @@ function drawTimeSeriesChart() {
             })
         })
     } else {
-        console.log('c')
         selectedNodes.forEach(node => {
             console.log(node)
             timeSeriesNodeData.push({
@@ -110,6 +79,16 @@ function drawTimeSeriesChart() {
 
 }
 
+// Function to execute when the button is clicked
+function handleClick() {
+    chart.destroy()
+    drawTimeSeriesChart();
+}
+
+// Get the button element and add an event listener
+const button = document.getElementById('rebuildTimeSeriesChartButton');
+button.addEventListener('click', handleClick);
+
 function openPage(pageName) {
     let tabcontent = document.getElementsByClassName('tabcontent');
     for (let i = 0; i < tabcontent.length; i++) {
@@ -124,12 +103,14 @@ function openPage(pageName) {
     document.getElementById(pageName).style.display = 'block';
     document.querySelector(`[onclick="openPage('${pageName}')"]`).style.backgroundColor = '#ccc';
 
+    document.getElementById('destoryTimeSeriesChart')
+
     if (pageName === 'TimeSeries') {
         drawTimeSeriesChart();
     }
 }
 
-function updateTimeSeriesChart(tick, currentAmount, iter) {
+function updateTimeSeriesChart(currentAmount, iter) {
     console.log(chart.data)
     chart.data.datasets[iter].data.push(currentAmount);
     chart.update();

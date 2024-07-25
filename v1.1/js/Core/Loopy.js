@@ -34,7 +34,7 @@ function Loopy(config){
 	self.model = new Model(self);
 
 	// Loopy: SPEED!
-	self.signalSpeed = 3;
+	self.signalSpeed = 4;
 
 	// Sidebar
 	self.sidebar = new Sidebar(self);
@@ -134,19 +134,6 @@ function Loopy(config){
 	};
 
 
-	///////////////////////////
-	// Key commands //
-	///////////////////////////
-
-	// document.addEventListener('click', e => {
-	// 	console.log(e.shiftKey); // shift
-	// 	console.log(e.ctrlKey); // ctrl
-	// 	console.log(e.altKey); // alt
-	// 	console.log(e.metaKey); // command/windows (meta) key
-	//   });
-
-
-
 	/////////////////
 	// SAVE & LOAD //
 	/////////////////
@@ -210,7 +197,8 @@ function Loopy(config){
 	};
 	
 	// "BLANK START" DATA:
-	var _blankData = "[[[1,403,223,1,%22something%22,4],[2,405,382,1,%22something%2520else%22,5]],[[2,1,94,-1,0],[1,2,89,1,0]],[[609,311,%22need%2520ideas%2520on%2520what%2520to%250Asimulate%253F%2520how%2520about%253A%250A%250A%25E3%2583%25BBtechnology%250A%25E3%2583%25BBenvironment%250A%25E3%2583%25BBeconomics%250A%25E3%2583%25BBbusiness%250A%25E3%2583%25BBpolitics%250A%25E3%2583%25BBculture%250A%25E3%2583%25BBpsychology%250A%250Aor%2520better%2520yet%252C%2520a%250A*combination*%2520of%250Athose%2520systems.%250Ahappy%2520modeling!%22]],2%5D";
+	// var _blankData;
+	var _blankData = "[[],[],[[609,311,%22draw%2520circles%2520for%2520nodes%2520and%2520lines%2520for%2520edges!%22]],2%5D";
 
 	self.loadFromURL = function(){
 		var data = _getParameterByName("data");

@@ -84,9 +84,10 @@ function Model(loopy){
 		publish("model/changed");
 
 		// Add Edge
-		var edge = new Edge(self,config);
+		var edge = new Edge(self, config);
 		self.edges.push(edge);
 		self.update();
+
 		return edge;
 	};
 

@@ -9,6 +9,8 @@ Edge.MAX_SIGNALS = 100;
 Edge.MAX_SIGNALS_PER_EDGE = 10;
 Edge.defaultStrength = 1;
 
+
+
 function Edge(model, config){
 
 	var self = this;
@@ -31,6 +33,8 @@ function Edge(model, config){
 	// Get my NODES
 	self.from = model.getNode(self.from);
 	self.to = model.getNode(self.to);
+
+
 
 	// We have signals!
 	self.signals = [];
@@ -85,22 +89,6 @@ function Edge(model, config){
 			var signal = self.signals[i];
 			var lastPosition = signal.position;
 			signal.position += self.signalSpeed;
-
-			// If crossed the 0.5 mark...
-			/*
-			if(lastPosition<0.5 && signal.position>=0.5){
-
-				// Multiply by this edge's strength!
-				signal.delta *= self.strength;
-
-			}
-
-			// And also TWEEN the scale.
-			var gotoScaleX = Math.abs(signal.delta);
-			var gotoScaleY = signal.delta;
-			signal.scaleX = signal.scaleX*0.8 + gotoScaleX*0.2;
-			signal.scaleY = signal.scaleY*0.8 + gotoScaleY*0.2;
-			*/
 
 		}
 
@@ -194,6 +182,7 @@ function Edge(model, config){
 		self.signals = [];
 		Edge.allSignals = [];
 	});
+
 
 
 	//////////////////////////////////////
@@ -298,6 +287,11 @@ function Edge(model, config){
 		if(self.arc<0) labelBuffer*=-1;
 		ly += labelBuffer;
 
+
+
+
+
+
 		///////////////////////////////////////
 		// AND THEN UPDATE OTHER STUFF AFTER //
 		// THE CALCULATIONS ARE DONE I GUESS //
@@ -313,11 +307,23 @@ function Edge(model, config){
 
 	};
 
+
+
+
+
+
+		//////////////////////////////////////
+		// Track Edge Pairs //////////////////
+		//////////////////////////////////////
+
+		// Get edge pairs for use in pyTo.js
+
+
 	// Get position along arrow, on what parameter?
 	self.getArrowLength = function(){
 		var angle;
 		if(self.from==self.to){
-			// angle = Math.TAU;
+			angle = Math.TAU;
 			return r*Math.TAU - 2*self.from.radius;
 		}else{
 			//debugger;
@@ -335,6 +341,7 @@ function Edge(model, config){
 		}
 		return r*angle;
 	};
+
 	self.getPositionAlongArrow = function(param){
 
 		param = -0.05 + param*1.1; // (0,1) --> (-0.05, 1.05)
